@@ -21,8 +21,10 @@ fun DiaScreen(
     onBackClick: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    val lista = remember { Repository.rotina.getOrDefault(dia, mutableListOf()) }
+    //val lista = remember { Repository.rotina.getOrDefault(dia, mutableListOf()) }
     var refreshKey by remember { mutableStateOf(0) }
+    val lista = remember {
+        mutableStateListOf<String>().apply { addAll(Repository.rotina.getOrDefault(dia, mutableListOf())) } }
 
     Scaffold(
         topBar = {
@@ -104,9 +106,8 @@ fun DiaScreen(
         AddMateriaDialog(
             onDismiss = { showDialog = false },
             onConfirm = { materia ->
-                lista.add(materia)
-                Repository.rotina[dia] = lista
-                refreshKey++
+                lista.add(materia)                    // 🔹 Atualiza instantaneamente
+                Repository.rotina[dia] = lista        // 🔹 Opcional: salva no repo
                 showDialog = false
             }
         )
